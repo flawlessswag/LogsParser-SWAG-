@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Arizona SWAG LogsParser Helper</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="popup.css?v=2.3.0">
+</head>
+
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="logo-area">
+        <img class="logo-img" src="../icons/icon128.png" alt="Arizona SWAG Logo">
+        <div class="logo-text">
+          <h1>Arizona SWAG</h1>
+          <span class="logo-sub">LogsParser Helper</span>
+        </div>
+      </div>
+
+      <div class="header-tools">
+        <button type="button" class="search-trigger" id="search-trigger" title="Поиск настроек (Ctrl+K)">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <span>Поиск настроек</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+
+        <button type="button" class="header-icon-btn" id="open-menu-settings" title="Настроить меню">
+          <i class="fa-solid fa-sliders"></i>
+        </button>
+
+        <div class="toggle-wrapper">
+          <span class="state-dot" id="toggle-state-dot"></span>
+          <span class="toggle-status" id="toggle-status-text">Вкл</span>
+          <label class="switch" title="Включить или выключить расширение">
+            <input type="checkbox" id="extension-toggle" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+      </div>
+    </header>
+
+    <div class="app-body">
+      <aside class="app-sidebar" aria-label="Разделы меню">
+        <nav class="side-nav" role="tablist">
+          <button class="tab-btn active" data-tab="appearance-tab" role="tab" aria-controls="appearance-tab" aria-selected="true">
+            <span class="nav-icon"><i class="fa-solid fa-palette"></i></span>
+            <span class="nav-copy">
+              <span class="nav-label">Оформление</span>
+              <span class="nav-sub">Тема и фон</span>
+            </span>
+          </button>
+          <button class="tab-btn" data-tab="logs-tab" role="tab" aria-controls="logs-tab" aria-selected="false">
+            <span class="nav-icon"><i class="fa-solid fa-table-list"></i></span>
+            <span class="nav-copy">
+              <span class="nav-label">Логи</span>
+              <span class="nav-sub">Таблица и элементы</span>
+            </span>
+          </button>
+          <button class="tab-btn" data-tab="tweaks-tab" role="tab" aria-controls="tweaks-tab" aria-selected="false">
+            <span class="nav-icon"><i class="fa-solid fa-wrench"></i></span>
+            <span class="nav-copy">
+              <span class="nav-label">Инструменты</span>
+              <span class="nav-sub">Пробив и детекторы</span>
+            </span>
+          </button>
+          <button class="tab-btn" data-tab="forms-tab" role="tab" aria-controls="forms-tab" aria-selected="false">
+            <span class="nav-icon"><i class="fa-solid fa-file-signature"></i></span>
+            <span class="nav-copy">
+              <span class="nav-label">Формы/IP</span>
+              <span class="nav-sub">Разбор и сверка</span>
+            </span>
+          </button>
+          <button class="tab-btn" data-tab="menu-tab" role="tab" aria-controls="menu-tab" aria-selected="false">
+            <span class="nav-icon"><i class="fa-solid fa-grip"></i></span>
+            <span class="nav-copy">
+              <span class="nav-label">Меню</span>
+              <span class="nav-sub">Под себя</span>
+            </span>
+          </button>
+        </nav>
+      </aside>
+
+      <main class="tab-content">
+
+        <section id="appearance-tab" class="tab-panel active" role="tabpanel">
+          <header class="panel-head">
+            <div class="panel-heading">
+              <span class="panel-kicker">Настройки</span>
+              <h2>Оформление</h2>
+              <p>Тема, акцент, фон и внешний вид страницы логов.</p>
+            </div>
+            <div class="panel-head-actions">
+              <button type="button" class="panel-action panel-collapse-all" data-collapse-all="appearance-tab">
+                <i class="fa-solid fa-chevron-up"></i><span>Свернуть все</span>
+              </button>
+            </div>
+          </header>
+
+          <div class="customizer-scroll">
+            <div class="control-group-title"><i class="fa-solid fa-paintbrush menu-icon"></i><span>Оформление логов</span><i class="fa-solid fa-chevron-down group-chevron"></i></div>
+            <div class="control-card">
+              <div class="control-row">
+                <label><i class="fa-solid fa-circle-half-stroke menu-icon"></i>Режим темы</label>
+                <select id="visual-theme-mode" class="arz-select">
+                  <option value="dark" selected>Тёмная тема</option>
+                  <option value="light">Светлая тема</option>
+                </select>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-palette menu-icon"></i>Цветовая схема</label>
+                <select id="visual-theme-color" class="arz-select">
+                  <option value="red" selected>Arizona Red</option>
+                  <option value="ocean">Синий</option>
+                  <option value="emerald">Изумруд</option>
+                  <option value="gold">Янтарь</option>
+                  <option value="frost">Графит</option>
+                  <option value="dracula">Слива</option>
+                  <option value="sunset">Терракота</option>
+                  <option value="cyberpunk">Роза</option>
+                  <option value="nord">Норд</option>
+                  <option value="matrix">Мох</option>
+                </select>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-border-all menu-icon"></i>Закругление элементов</label>
+                <select id="visual-theme-radius" class="arz-select">
+                  <option value="0px">Без закругления (0px)</option>
+                  <option value="4px">Минимальное (4px)</option>
+                  <option value="8px" selected>Стандартное (8px)</option>
+                  <option value="12px">Среднее (12px)</option>
+                  <option value="16px">Максимальное (16px)</option>
+                </select>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-wand-magic-sparkles menu-icon"></i>Применять тему к логам</label>
+                <label class="switch">
+                  <input type="checkbox" id="visual-theme-enabled" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-sliders menu-icon"></i>Своя палитра</label>
+                <label class="switch">
+                  <input type="checkbox" id="visual-custom-theme-enabled">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <div id="custom-theme-editor" class="custom-theme-editor" hidden>
+                <div class="custom-theme-editor-header">
+                  <div>
+                    <strong>Палитра своей темы</strong>
+                    <span>Настройте цвета отдельно для каждого режима</span>
+                  </div>
+                  <div class="custom-theme-mode-tabs" role="tablist" aria-label="Режим своей темы">
+                    <button type="button" class="custom-theme-mode-btn active" data-custom-theme-mode="dark">Тёмная</button>
+                    <button type="button" class="custom-theme-mode-btn" data-custom-theme-mode="light">Светлая</button>
+                  </div>
+                </div>
+                <div class="custom-theme-grid">
+                  <label class="custom-color-field">
+                    <span>Основной цвет</span>
+                    <input type="color" data-custom-theme-color="accent" value="#d33b45">
+                  </label>
+                  <label class="custom-color-field">
+                    <span>Цвет hover</span>
+                    <input type="color" data-custom-theme-color="accentHover" value="#e0525c">
+                  </label>
+                  <label class="custom-color-field">
+                    <span>Фон страницы</span>
+                    <input type="color" data-custom-theme-color="bg" value="#0f1115">
+                  </label>
+                  <label class="custom-color-field">
+                    <span>Фон панелей</span>
+                    <input type="color" data-custom-theme-color="bgSidebar" value="#14171c">
+                  </label>
+                  <label class="custom-color-field">
+                    <span>Фон карточек</span>
+                    <input type="color" data-custom-theme-color="cardBg" value="#191d23">
+                  </label>
+                  <label class="custom-color-field">
+                    <span>Фон таблиц</span>
+                    <input type="color" data-custom-theme-color="tableBg" value="#161a1f">
+                  </label>
+                  <label class="custom-color-field">
+                    <span>Основной текст</span>
+                    <input type="color" data-custom-theme-color="text" value="#e6e8eb">
+                  </label>
+                  <label class="custom-color-field">
+                    <span>Вторичный текст</span>
+                    <input type="color" data-custom-theme-color="textSecondary" value="#9aa1ab">
+                  </label>
+                  <label class="custom-color-field">
+                    <span>Границы</span>
+                    <input type="color" data-custom-theme-color="border" value="#2a2f37">
+                  </label>
+                </div>
+                <div class="custom-theme-preview" aria-live="polite">
+                  <div class="custom-theme-preview-title">Предпросмотр</div>
+                  <div class="custom-theme-preview-card">
+                    <div class="custom-theme-preview-card-header">
+                      <span class="custom-theme-preview-dot"></span>
+                      <span>Пример записи лога</span>
+                      <span class="custom-theme-preview-time">12:45:08</span>
+                    </div>
+                    <div class="custom-theme-preview-row">
+                      <strong>Игрок</strong>
+                      <span>Выполнил действие на сервере</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="custom-theme-actions">
+                  <button type="button" id="custom-theme-copy-preset" class="arz-btn-secondary appearance-btn">Взять цвета готовой темы</button>
+                  <button type="button" id="custom-theme-reset" class="arz-btn-secondary appearance-btn">Сбросить свою тему</button>
+                </div>
+              </div>
+
+              <div class="control-row">
+                <label for="visual-background-color"><i class="fa-solid fa-fill-drip menu-icon"></i>Фон страницы логов</label>
+                <div class="appearance-actions">
+                  <input type="color" id="visual-background-color" value="#0f1115" class="arz-color-input" title="Выберите цвет фона">
+                  <button type="button" id="visual-background-reset" class="arz-btn-secondary appearance-btn">Сбросить</button>
+                </div>
+              </div>
+              <div class="control-row">
+                <label for="visual-background-image"><i class="fa-regular fa-image menu-icon"></i>Картинка заднего фона</label>
+                <div class="appearance-actions">
+                  <input type="file" id="visual-background-image" accept="image/*" hidden>
+                  <button type="button" id="visual-background-image-btn" class="arz-btn-secondary appearance-btn">Выбрать</button>
+                  <button type="button" id="visual-background-image-reset" class="arz-btn-secondary appearance-btn">Удалить</button>
+                </div>
+              </div>
+              <div class="control-row control-row-range">
+                <label for="visual-background-blur"><i class="fa-solid fa-droplet menu-icon"></i>Блюр картинки фона</label>
+                <div class="range-control">
+                  <input type="range" id="visual-background-blur" min="0" max="30" step="1" value="0">
+                  <span id="visual-background-blur-val">0 px</span>
+                </div>
+              </div>
+              <div class="control-row control-row-range">
+                <label for="visual-card-opacity"><i class="fa-solid fa-layer-group menu-icon"></i>Прозрачность карточки логов</label>
+                <div class="range-control">
+                  <input type="range" id="visual-card-opacity" min="10" max="100" step="1" value="100">
+                  <span id="visual-card-opacity-val">100%</span>
+                </div>
+              </div>
+              <div class="control-row control-row-stacked background-url-row">
+                <label for="visual-background-image-url"><i class="fa-solid fa-link menu-icon"></i>Фон по ссылке</label>
+                <div class="appearance-actions background-url-actions">
+                  <input type="url" id="visual-background-image-url" class="arz-input" placeholder="https://example.com/image.jpg">
+                  <button type="button" id="visual-background-image-url-btn" class="arz-btn-secondary appearance-btn">Применить</button>
+                </div>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-border-top-left menu-icon"></i>Border у card-body</label>
+                <label class="switch">
+                  <input type="checkbox" id="visual-card-body-border">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-grip-lines-vertical menu-icon"></i>Вертикальные линии таблицы</label>
+                <label class="switch">
+                  <input type="checkbox" id="visual-vertical-borders">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="logs-tab" class="tab-panel" role="tabpanel">
+          <header class="panel-head">
+            <div class="panel-heading">
+              <span class="panel-kicker">Настройки</span>
+              <h2>Логи</h2>
+              <p>Таблица, навигация и элементы страницы логов.</p>
+            </div>
+            <div class="panel-head-actions">
+              <button type="button" class="panel-action panel-collapse-all" data-collapse-all="logs-tab">
+                <i class="fa-solid fa-chevron-up"></i><span>Свернуть все</span>
+              </button>
+            </div>
+          </header>
+
+          <div class="customizer-scroll">
+            <div class="control-group-title"><i class="fa-solid fa-sliders menu-icon"></i><span>Интерфейс</span><i class="fa-solid fa-chevron-down group-chevron"></i></div>
+            <div class="control-card">
+              <div class="control-row">
+                <label><i class="fa-solid fa-angles-down menu-icon"></i>Кнопка "Загрузить ещё" логов</label>
+                <label class="switch">
+                  <input type="checkbox" id="tweak-load-more" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-thumbtack menu-icon"></i>Закрепить навбар</label>
+                <label class="switch">
+                  <input type="checkbox" id="visual-sticky-navbar" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-table menu-icon"></i>Закрепить название столбцов</label>
+                <label class="switch">
+                  <input type="checkbox" id="visual-sticky-headers" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-columns menu-icon"></i>Скрыть боковое меню</label>
+                <label class="switch">
+                  <input type="checkbox" id="visual-hide-sidebar">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-bars-staggered menu-icon"></i>Кнопка сворачивания меню</label>
+                <label class="switch">
+                  <input type="checkbox" id="visual-toggle-sidebar">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-compress menu-icon"></i>Убрать верхний отступ контента</label>
+                <label class="switch">
+                  <input type="checkbox" id="visual-remove-top-padding">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-regular fa-image menu-icon"></i>Заменить Favicon сайта</label>
+                <label class="switch">
+                  <input type="checkbox" id="visual-replace-favicon">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-signature menu-icon"></i>Кастомизация логотипа</label>
+                <select id="visual-logo-customization" class="arz-select">
+                  <option value="default" selected>Стандартный логотип</option>
+                  <option value="with-icon">С иконкой расширения</option>
+                  <option value="with-icon-replace">Иконка + LogsParser</option>
+                </select>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-rotate-left menu-icon"></i>Красивая кнопка "Сбросить"</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-styleResetButtonEnabled" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="control-group-title"><i class="fa-solid fa-eye menu-icon"></i><span>Элементы интерфейса</span><i class="fa-solid fa-chevron-down group-chevron"></i></div>
+            <div class="control-card">
+              <div class="control-row">
+                <label><i class="fa-solid fa-eye menu-icon"></i>Показывать заполненные скрытые поля</label>
+                <label class="switch">
+                  <input type="checkbox" id="tweak-show-filled-filters" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-bookmark menu-icon"></i>Отметка логов</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-markLogsEnabled" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-regular fa-eye menu-icon"></i>Кнопка копирования лога</label>
+                <select id="tweak-copy-btn-visibility" class="arz-select">
+                  <option value="off">Выключить</option>
+                  <option value="hover" selected>При наведении на строку</option>
+                  <option value="always">Всегда показывать</option>
+                </select>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-regular fa-eye menu-icon"></i>Кнопки скрытия колонок (Глаз)</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-columnEyeButtons" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-filter menu-icon"></i>Быстрый фильтр при прокрутке</label>
+                <label class="switch">
+                  <input type="checkbox" id="tweak-floating-filter" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="tweaks-tab" class="tab-panel" role="tabpanel">
+          <header class="panel-head">
+            <div class="panel-heading">
+              <span class="panel-kicker">Настройки</span>
+              <h2>Инструменты</h2>
+              <p>Пробив игроков, копирование, детекторы и приватность.</p>
+            </div>
+            <div class="panel-head-actions">
+              <button type="button" class="panel-action panel-collapse-all" data-collapse-all="tweaks-tab">
+                <i class="fa-solid fa-chevron-up"></i><span>Свернуть все</span>
+              </button>
+            </div>
+          </header>
+
+          <div class="customizer-scroll">
+            <div class="control-group-title"><i class="fa-solid fa-user-shield menu-icon"></i><span>Проверка игроков</span><i class="fa-solid fa-chevron-down group-chevron"></i></div>
+            <div class="control-card">
+              <div class="control-row">
+                <label><i class="fa-solid fa-user-shield menu-icon"></i>Панель пробива (онлайн, наказ., IP, ID)</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-online" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-location-crosshairs menu-icon"></i>Включить пробив IP</label>
+                <label class="switch">
+                  <input type="checkbox" id="ipLookupEnabled" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-route menu-icon"></i>GeoIP (расстояние)</label>
+                <label class="switch">
+                  <input type="checkbox" id="geoIPEnabled" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="field-grid-title">Поля информации по IP</div>
+              <div class="check-grid">
+                <label class="check-item"><input type="checkbox" id="ipField-country"><span>Страна</span></label>
+                <label class="check-item"><input type="checkbox" id="ipField-city"><span>Город</span></label>
+                <label class="check-item"><input type="checkbox" id="ipField-regionName"><span>Регион</span></label>
+                <label class="check-item"><input type="checkbox" id="ipField-isp"><span>Провайдер</span></label>
+                <label class="check-item"><input type="checkbox" id="ipField-org"><span>Организация</span></label>
+                <label class="check-item"><input type="checkbox" id="ipField-as"><span>AS</span></label>
+                <label class="check-item"><input type="checkbox" id="ipField-mobile"><span>Mobile</span></label>
+                <label class="check-item"><input type="checkbox" id="ipField-proxy"><span>Proxy</span></label>
+                <label class="check-item"><input type="checkbox" id="ipField-hosting"><span>Хостинг</span></label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-regular fa-calendar-days menu-icon"></i>Выбор конкретного дня</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-dateShortcutEnabled" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <div class="manual-ip-section">
+                <div class="field-grid-title"><i class="fa-solid fa-magnifying-glass"></i>Ручной пробив IP</div>
+                <div class="manual-ip-row">
+                  <input type="text" id="manual-ip-input" class="arz-input" placeholder="Введите IP, например 8.8.8.8">
+                  <button id="manual-ip-btn" type="button" class="arz-btn-primary"><i class="fa-solid fa-search"></i>Проверить</button>
+                </div>
+                <div id="manual-ip-results" class="manual-ip-results" style="display: none;"></div>
+              </div>
+            </div>
+
+            <div class="control-group-title"><i class="fa-solid fa-copy menu-icon"></i><span>Копирование и формы</span><i class="fa-solid fa-chevron-down group-chevron"></i></div>
+            <div class="control-card">
+              <div class="control-row">
+                <label><i class="fa-solid fa-list-check menu-icon"></i>Выбор нескольких логов</label>
+                <label class="switch">
+                  <input type="checkbox" id="tweak-multi-select" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-users menu-icon"></i>Ввод нескольких ID/никнеймов</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-multiPlayersEnabled" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row is-sub">
+                <label><i class="fa-solid fa-gavel menu-icon"></i>Пробив наказаний</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-punishment" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row is-sub">
+                <label><i class="fa-solid fa-network-wired menu-icon"></i>Пакетный пробив IP</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-ipBatch" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row is-sub">
+                <label><i class="fa-solid fa-id-card menu-icon"></i>Пробив ID и никнеймов</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-idNick" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row is-sub">
+                <label><i class="fa-solid fa-flag menu-icon"></i>Пробив репортов</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-report" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row is-sub">
+                <label><i class="fa-solid fa-user-secret menu-icon"></i>Пробив игрока</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-lookup" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-arrow-up-wide-short menu-icon"></i>Дублировать пагинацию наверху</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-duplicatePaginationTop" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-table-list menu-icon"></i>Менеджер форм команд</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-formsEnabled" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-bookmark menu-icon"></i>Шаблоны URL</label>
+                <label class="switch">
+                  <input type="checkbox" id="templatesEnabled" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-regular fa-copy menu-icon"></i>Кнопка "Копировать страницу"</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-copyAllLogsEnabled" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-magnifying-glass menu-icon"></i>Фильтр для поиска в логах</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-filterWindow" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-copy menu-icon"></i>Кнопка копирования всей строки</label>
+                <label class="switch">
+                  <input type="checkbox" id="tweak-copy-row" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-eye-slash menu-icon"></i>Кнопка скрытия строки</label>
+                <label class="switch">
+                  <input type="checkbox" id="tweak-hide-row" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-border-none menu-icon"></i>Копирование ячеек и сниппетов</label>
+                <label class="switch">
+                  <input type="checkbox" id="tweak-copy-cells" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-ban menu-icon"></i>Блокировка стандартного копирования</label>
+                <label class="switch">
+                  <input type="checkbox" id="tweak-block-copy" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="control-group-title"><i class="fa-solid fa-shield-halved menu-icon"></i><span>Детекторы</span><i class="fa-solid fa-chevron-down group-chevron"></i></div>
+            <div class="control-card">
+              <div class="control-row">
+                <label><i class="fa-solid fa-fingerprint menu-icon"></i>Детекция одинаковых IP</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-identicalIPs" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row is-sub">
+                <label><i class="fa-solid fa-palette menu-icon"></i>Цвет подсветки IP</label>
+                <input type="color" id="tools-identicalIPsColor" class="color-swatch">
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-network-wired menu-icon"></i>Пробив схожих IP адресов</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-similarIPsFinder" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-rotate menu-icon"></i>Детекция повторов действий</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-actionRepeatsFinder" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-chart-line menu-icon"></i>Окно аналитики логов</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-analytics" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="control-row">
+                <label><i class="fa-solid fa-car-rear menu-icon"></i>Детекция деталей тюнинга</label>
+                <label class="switch">
+                  <input type="checkbox" id="tuningParts-enabled" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row control-row-stacked range-stacked">
+                <div class="range-label"><span>Задержка сканирования</span><span id="tuningParts-scanDelay-val">500 мс</span></div>
+                <input type="range" id="tuningParts-scanDelay" min="100" max="2000" step="50">
+              </div>
+              <div class="control-row control-row-stacked range-stacked">
+                <div class="range-label"><span>Толщина обводки</span><span id="tuningParts-outlineWidth-val">2 px</span></div>
+                <input type="range" id="tuningParts-outlineWidth" min="1" max="5" step="1">
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-palette menu-icon"></i>Цвет подсветки тюнинга</label>
+                <input type="color" id="tuningParts-highlightColor" class="color-swatch">
+              </div>
+              <div class="control-row control-row-stacked">
+                <label for="tuningParts-timePattern">Паттерн времени (ММ:СС, через запятую)</label>
+                <input type="text" id="tuningParts-timePattern" class="arz-input" placeholder="30:01, 30:02">
+              </div>
+              <div class="control-row">
+                <label class="check-inline"><input type="checkbox" id="tuningParts-highlightOnlyMatching"><span>Только точное время</span></label>
+              </div>
+              <div class="control-row">
+                <label class="check-inline"><input type="checkbox" id="tuningParts-autoScrollToMatch"><span>Авто-прокрутка к строке</span></label>
+              </div>
+              <div class="control-row">
+                <label class="check-inline"><input type="checkbox" id="tuningParts-playSoundOnMatch"><span>Звук при обнаружении</span></label>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="control-row">
+                <label><i class="fa-solid fa-circle-check menu-icon"></i>Проверка Email на ботов</label>
+                <label class="switch">
+                  <input type="checkbox" id="emailCheck-enabled" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row is-sub">
+                <label><i class="fa-regular fa-copy menu-icon"></i>Детекция дубликатов</label>
+                <label class="switch">
+                  <input type="checkbox" id="emailCheck-duplicateDetection" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row control-row-stacked range-stacked">
+                <div class="range-label"><span>Минимальный порог повторов</span><span id="emailCheck-threshold-val">3</span></div>
+                <input type="range" id="emailCheck-threshold" min="2" max="20" step="1">
+              </div>
+              <div class="control-row is-sub">
+                <label><i class="fa-solid fa-square-poll-vertical menu-icon"></i>Слабый риск (3-4 повт.)</label>
+                <input type="color" id="emailCheck-lowColor" class="color-swatch">
+              </div>
+              <div class="control-row is-sub">
+                <label><i class="fa-solid fa-square-poll-vertical menu-icon"></i>Средний риск (5-9 повт.)</label>
+                <input type="color" id="emailCheck-mediumColor" class="color-swatch">
+              </div>
+              <div class="control-row is-sub">
+                <label><i class="fa-solid fa-square-poll-vertical menu-icon"></i>Высокий риск (10+ повт.)</label>
+                <input type="color" id="emailCheck-highColor" class="color-swatch">
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="control-row">
+                <label><i class="fa-solid fa-shield-halved menu-icon"></i>Проверка TG/VK на ботов</label>
+                <label class="switch">
+                  <input type="checkbox" id="tools-tgVkDetectorEnabled" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="control-group-title"><i class="fa-solid fa-user-secret menu-icon"></i><span>Приватность</span><i class="fa-solid fa-chevron-down group-chevron"></i></div>
+            <div class="control-card">
+              <div class="control-row">
+                <label><i class="fa-solid fa-mask menu-icon"></i>Включить маскировку</label>
+                <label class="switch">
+                  <input type="checkbox" id="masking-enabled" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row is-sub">
+                <label><i class="fa-solid fa-network-wired menu-icon"></i>Маскировать IP</label>
+                <label class="switch">
+                  <input type="checkbox" id="masking-maskIp" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row is-sub">
+                <label><i class="fa-regular fa-envelope menu-icon"></i>Маскировать Email</label>
+                <label class="switch">
+                  <input type="checkbox" id="masking-maskEmail" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row is-sub">
+                <label><i class="fa-brands fa-telegram menu-icon"></i>Маскировать Telegram</label>
+                <label class="switch">
+                  <input type="checkbox" id="masking-maskTG" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row is-sub">
+                <label><i class="fa-brands fa-vk menu-icon"></i>Маскировать VK</label>
+                <label class="switch">
+                  <input type="checkbox" id="masking-maskVK" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-earth-americas menu-icon"></i>Информация по IP и расстояние</label>
+                <label class="switch">
+                  <input type="checkbox" id="tweak-ip-info">
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-list-ol menu-icon"></i>Лимит логов по умолчанию</label>
+                <select id="tweak-always-limit" class="arz-select">
+                  <option value="none" selected>По умолчанию</option>
+                  <option value="100">100</option>
+                  <option value="500">500</option>
+                  <option value="1000">1000</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="forms-tab" class="tab-panel" role="tabpanel">
+          <header class="panel-head">
+            <div class="panel-heading">
+              <span class="panel-kicker">Проверка</span>
+              <h2>Работа с формами и IP</h2>
+              <p>Разбор формы, автоматическая сверка и проверка адресов.</p>
+            </div>
+          </header>
+
+          <div class="customizer-scroll">
+            <div class="form-intro">
+              Вставьте форму (пункты 1-9) или загрузите <strong>.txt</strong>. Расширение разберёт поля, проверит IP и подготовит досье для сверки с логами.
+            </div>
+
+            <textarea id="form-source" class="arz-textarea form-source" spellcheck="false"
+              placeholder="1. Ваш игровой ник: Nick_Name&#10;2. Город регистрации: ...&#10;3. Где сейчас находитесь: ...&#10;4. Провайдер на данный момент: ...&#10;5. Когда был зарегистрирован аккаунт: ..."></textarea>
+
+            <div class="form-toolbar">
+              <button type="button" id="form-parse-btn" class="arz-btn-primary">
+                <i class="fa-solid fa-magnifying-glass"></i>Разобрать
+              </button>
+              <button type="button" id="form-file-btn" class="arz-btn-secondary">
+                <i class="fa-solid fa-folder-open"></i>.txt
+              </button>
+              <input type="file" id="form-file-input" accept=".txt,text/plain" hidden>
+              <button type="button" id="form-clear-btn" class="arz-btn-secondary">
+                <i class="fa-solid fa-eraser"></i>Очистить
+              </button>
+            </div>
+
+            <div id="form-result" class="form-result" hidden>
+              <div class="form-result-head">
+                <div class="form-result-heading">
+                  <div class="form-result-title" id="form-result-title">Результат разбора</div>
+                  <div class="form-result-subtitle" id="form-result-subtitle"></div>
+                </div>
+                <span class="form-status-badge" id="form-status-badge">-</span>
+              </div>
+
+              <div id="form-attention" class="form-attention"></div>
+              <div id="form-fields" class="form-fields"></div>
+
+              <div id="form-verification" class="form-verification" hidden>
+                <div class="form-verification-head">
+                  <div class="form-subtitle"><i class="fa-solid fa-shield-halved"></i>Сверка с логами</div>
+                  <button type="button" id="form-verify-refresh" class="form-refresh-btn">Обновить</button>
+                </div>
+                <div id="form-verification-body" class="form-verification-body"></div>
+              </div>
+
+              <div class="form-ip-check">
+                <div class="form-subtitle"><i class="fa-solid fa-location-dot"></i>Проверка IP</div>
+                <div class="form-ip-row">
+                  <input type="text" id="form-ip-input" class="arz-input" spellcheck="false" placeholder="IP из формы или вручную">
+                  <button type="button" id="form-ip-check-btn" class="arz-btn-secondary">Проверить</button>
+                </div>
+                <div id="form-ip-result" class="form-ip-result" hidden></div>
+              </div>
+
+              <div class="form-actions">
+                <button type="button" id="form-logs-btn" class="arz-btn-primary">
+                  <i class="fa-solid fa-shield-halved"></i>Сверить по логам
+                </button>
+                <button type="button" id="form-open-nick-btn" class="arz-btn-secondary">Открыть логи</button>
+                <button type="button" id="form-open-ip-btn" class="arz-btn-secondary">Логи по IP</button>
+                <button type="button" id="form-open-mail-btn" class="arz-btn-secondary" hidden>Логи по почте</button>
+              </div>
+
+              <p class="form-hint">
+                Сверка автоматически запрашивает логи по нику с сервера и сравнивает дату регистрации, IP, город, провайдера, соцсети и платежи. Кнопка «Открыть логи» показывает записи на сайте.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section id="menu-tab" class="tab-panel" role="tabpanel">
+          <header class="panel-head">
+            <div class="panel-heading">
+              <span class="panel-kicker">Интерфейс</span>
+              <h2>Меню</h2>
+              <p>Настройте размер, плотность и навигацию попапа под себя.</p>
+            </div>
+            <div class="panel-head-actions">
+              <button type="button" class="panel-action panel-collapse-all" data-collapse-all="menu-tab">
+                <i class="fa-solid fa-chevron-up"></i><span>Свернуть все</span>
+              </button>
+            </div>
+          </header>
+
+          <div class="customizer-scroll">
+            <div class="control-group-title"><i class="fa-solid fa-wand-magic-sparkles menu-icon"></i><span>Готовые пресеты</span><i class="fa-solid fa-chevron-down group-chevron"></i></div>
+            <div class="control-card preset-card">
+              <div class="preset-grid">
+                <button type="button" class="preset-btn" data-popup-preset="compact">
+                  <span class="preset-icon"><i class="fa-solid fa-compress"></i></span>
+                  <strong>Компактный</strong>
+                  <span>Больше настроек на экране</span>
+                  <small>Сбоку · плотно · 600 px</small>
+                </button>
+                <button type="button" class="preset-btn is-active" data-popup-preset="balanced">
+                  <span class="preset-icon"><i class="fa-solid fa-scale-balanced"></i></span>
+                  <strong>Баланс</strong>
+                  <span>Оптимально для работы</span>
+                  <small>Сбоку · стандарт · 680 px</small>
+                </button>
+                <button type="button" class="preset-btn" data-popup-preset="spacious">
+                  <span class="preset-icon"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></span>
+                  <strong>Просторный</strong>
+                  <span>Крупные элементы и воздух</span>
+                  <small>Сверху · просторно · 760 px</small>
+                </button>
+              </div>
+            </div>
+
+            <div class="control-group-title"><i class="fa-solid fa-sliders menu-icon"></i><span>Навигация и размер</span><i class="fa-solid fa-chevron-down group-chevron"></i></div>
+            <div class="control-card">
+              <div class="control-row">
+                <label for="popup-layout"><i class="fa-solid fa-table-columns menu-icon"></i>Расположение меню</label>
+                <select id="popup-layout" class="arz-select">
+                  <option value="side">Слева сбоку</option>
+                  <option value="top">Сверху</option>
+                </select>
+              </div>
+              <div class="control-row">
+                <label for="popup-density"><i class="fa-solid fa-bars menu-icon"></i>Плотность интерфейса</label>
+                <select id="popup-density" class="arz-select">
+                  <option value="compact">Компактная</option>
+                  <option value="regular">Стандартная</option>
+                  <option value="relaxed">Просторная</option>
+                </select>
+              </div>
+              <div class="control-row">
+                <label for="popup-width"><i class="fa-solid fa-arrows-left-right menu-icon"></i>Ширина окна</label>
+                <select id="popup-width" class="arz-select">
+                  <option value="600">600 px</option>
+                  <option value="680">680 px</option>
+                  <option value="760">760 px</option>
+                </select>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-tag menu-icon"></i>Подписи в боковом меню</label>
+                <label class="switch">
+                  <input type="checkbox" id="popup-nav-subtitles" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-wand-sparkles menu-icon"></i>Анимации</label>
+                <label class="switch">
+                  <input type="checkbox" id="popup-motion" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="control-group-title"><i class="fa-solid fa-gears menu-icon"></i><span>Поведение</span><i class="fa-solid fa-chevron-down group-chevron"></i></div>
+            <div class="control-card">
+              <div class="control-row">
+                <label><i class="fa-solid fa-chevron-down menu-icon"></i>Сворачиваемые группы настроек</label>
+                <label class="switch">
+                  <input type="checkbox" id="popup-collapsible" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-floppy-disk menu-icon"></i>Запоминать свернутые группы</label>
+                <label class="switch">
+                  <input type="checkbox" id="popup-remember-collapsed" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+              <div class="control-row">
+                <label><i class="fa-solid fa-list-check menu-icon"></i>Кнопки «Свернуть все»</label>
+                <label class="switch">
+                  <input type="checkbox" id="popup-show-collapse-all" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="control-group-title"><i class="fa-solid fa-keyboard menu-icon"></i><span>Горячие клавиши</span><i class="fa-solid fa-chevron-down group-chevron"></i></div>
+            <div class="control-card">
+              <div class="shortcut-row"><span>Поиск по настройкам</span><span class="shortcut-keys"><kbd>Ctrl</kbd><kbd>K</kbd></span></div>
+              <div class="shortcut-row"><span>Перейти к разделу</span><span class="shortcut-keys"><kbd>Alt</kbd><kbd>1</kbd>-<kbd>5</kbd></span></div>
+              <div class="shortcut-row"><span>Закрыть поиск</span><span class="shortcut-keys"><kbd>Esc</kbd></span></div>
+            </div>
+
+            <div class="control-group-title"><i class="fa-solid fa-rotate-left menu-icon"></i><span>Сброс</span><i class="fa-solid fa-chevron-down group-chevron"></i></div>
+            <div class="control-card">
+              <div class="control-row menu-reset-row">
+                <div class="menu-reset-copy">
+                  <strong>Сбросить настройки меню</strong>
+                  <span>Вернуть стандартные ширину, плотность и навигацию. Настройки логов не затрагиваются.</span>
+                </div>
+                <button type="button" id="popup-reset-ui" class="arz-btn-secondary">Сбросить</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <div class="command-overlay" id="command-overlay" hidden>
+    <div class="command-dialog" role="dialog" aria-modal="true" aria-label="Поиск по настройкам">
+      <div class="command-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="command-input" placeholder="Найти настройку: тема, IP, копирование..." autocomplete="off" spellcheck="false">
+        <button type="button" class="command-close" id="command-close" aria-label="Закрыть поиск"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="command-hint" id="command-hint">Начните вводить название настройки</div>
+      <div class="command-results" id="command-results"></div>
+      <div class="command-footer">
+        <span><kbd>&uarr;</kbd><kbd>&darr;</kbd> выбор</span>
+        <span><kbd>Enter</kbd> открыть</span>
+        <span><kbd>Esc</kbd> закрыть</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="ui-toast" id="ui-toast" role="status" aria-live="polite"></div>
+
+  <script src="popup.js?v=2.3.0"></script>
+</body>
+
+</html>

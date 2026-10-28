@@ -1,0 +1,70 @@
+{
+  "manifest_version": 3,
+  "name": "Arizona SWAG LogsParser Helper",
+  "version": "2.3.0",
+  "description": "Помощник для работы с логами Arizona SWAG",
+  "permissions": [
+    "storage",
+    "notifications",
+    "activeTab",
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://logsparser.cypher-team.com/*",
+    "https://forum.arizona-swag.com/*",
+    "http://ip-api.com/*"
+  ],
+  "background": {
+    "service_worker": "background/background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://logsparser.cypher-team.com/*"
+      ],
+      "js": [
+        "content/content.js"
+      ],
+      "css": [
+        "content/content.css"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://logsparser.cypher-team.com/*"
+      ],
+      "js": [
+        "content/stopCopy.js"
+      ],
+      "world": "MAIN",
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "icons/icon16.png",
+        "icons/icon48.png",
+        "icons/icon128.png"
+      ],
+      "matches": [
+        "https://logsparser.cypher-team.com/*"
+      ]
+    }
+  ]
+}
